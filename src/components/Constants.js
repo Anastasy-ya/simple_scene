@@ -36,7 +36,7 @@ export const normals = new Float32Array([
   0, 0, -1
 ]);
 
-// UV-координаты
+// UV-координаты (при добавлении текстуры нуждаются в изменении)
 export const uvArray = new Float32Array([
   0, 1, 1, 1, 0, 0, 1, 0,
   0, 1, 1, 1, 0, 0, 1, 0,

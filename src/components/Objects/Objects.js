@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 import { indices, normals, uvArray } from '../Constants'
 
-export function createObject({ width, height, depth }, scene) {
+export function createOrUpdateObject({ width, height, depth }, scene) {
   const environmentTexture = scene.environment;
 
   const exisitingCube = scene.getObjectByName('Box') ? scene.getObjectByName('Box') : null;
-  console.log(exisitingCube, 'exisitingCube')
   const сubeGeometry = exisitingCube ? exisitingCube.geometry : new THREE.BufferGeometry();;
 
   const objects = [];
@@ -42,18 +41,9 @@ export function createObject({ width, height, depth }, scene) {
     -halfWidth, -halfHeight, -halfDepth,
   ]);
 
-  //vertices обновляется всегда (надо ли обновлять что-то еще?)
+  //vertices обновляются всегда
   сubeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
   сubeGeometry.attributes.position.needsUpdate = true;
-
-  // if (!exisitingCube) {//если куб создается заново
-  //   сubeGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
-  //   сubeGeometry.setIndex(indices);
-  //   сubeGeometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
-  // }
-  // else {
-  //   сubeGeometry.vertices.forEach(vertex => {})
-  // }
 
   const material = new THREE.MeshPhysicalMaterial({
     color: 0xff7518,
@@ -69,8 +59,6 @@ export function createObject({ width, height, depth }, scene) {
     side: THREE.DoubleSide,
   });
 
-  console.log(exisitingCube, 'exisitingCube')
-
   if (!exisitingCube) {
     // Если объекта нет, создаем новый
     сubeGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
@@ -78,7 +66,7 @@ export function createObject({ width, height, depth }, scene) {
     сubeGeometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
     const parallelepiped = new THREE.Mesh(сubeGeometry, material);
     parallelepiped.name = 'Box';
-    objects.push(parallelepiped); // Добавляем новый объект в сцену
+    objects.push(parallelepiped);
   }
 
   return objects;

@@ -1,44 +1,24 @@
 import * as THREE from 'three';
 import './App.css';
-//TODO переделать в TS
+//TODO переделать в TS проверка на отриц
 import React, { useEffect, useState, useRef } from 'react';
-import { Layout, Spin, Input, Button, Space, Switch, ConfigProvider } from 'antd';
+import { Layout, Spin, ConfigProvider } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-import theme from "../Styles/Theme.js";
-import { createObject } from '../Objects/Objects.js';
+import { createOrUpdateObject } from '../Objects/Objects.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { handleResize } from '../Scene/HandleResize.js';
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
 import background from '../Scene/brown_photostudio_04_4k.exr';
 import ParametersForm from '../Form/Form.js'
 
+
 const { Sider } = Layout;
 
 const App = () => {
-  // const [form] = Form.useForm();
   const [theme, setTheme] = useState('light');
   const [sceneReady, setSceneReady] = useState(false);
   const sceneParamsRef = useRef(null);
   const [parameters, setParameters] = useState({ width: 10, height: 15, depth: 20 });
-
-  const changeTheme = (checked) => {
-    setTheme(checked ? 'dark' : 'light');
-  };
-
-  const onSubmit = (e) => {
-    console.log('submitted')
-    // setHelperAdded(e.target.checked);
-  };
-
-  function deleteSceneObjects(scene) {
-    for (let i = scene.children.length - 1; i >= 0; i--) {
-      const obj = scene.children[i];
-
-      if ((obj instanceof THREE.Mesh || obj instanceof THREE.Line || obj instanceof THREE.Group)) {
-        scene.remove(obj);
-      }
-    }
-  }
 
   // инициализация сцены
   useEffect(() => {
@@ -95,24 +75,21 @@ const App = () => {
 
   // создание и удаление мешей
   useEffect(() => {
-    
     const { scene } = sceneParamsRef.current || {};
-    // deleteSceneObjects(scene)//почему не обновить
 
     if (!scene) return // Ждём пока сцена инициализируется
 
     let createdObjects = [];
 
-    createdObjects = createObject(parameters, scene)
+    createdObjects = createOrUpdateObject(parameters, scene)
     createdObjects.forEach(obj => {
-      console.log(obj, 'объект добавлен')
       scene.add(obj)
     });
 
   }, [parameters, sceneParamsRef]);
 
-  // Если сцена или текстура не загружены, показать спин
-  if (!sceneReady || !sceneParamsRef.current) { // || !sceneParamsRef.current.scene.environment
+  // Если сцена не загруженa, показать спин
+  if (!sceneReady || !sceneParamsRef.current.scene) {
     return <Spin
       style={{
         width: '100%',
@@ -136,75 +113,17 @@ const App = () => {
   return (
     <ConfigProvider theme={theme}>
       <Layout style={{ height: '100vh', position: 'fixed' }}>
-        <Sider style={{ position: 'fixed', height: '100%' }}>
-          <ParametersForm setParameters={setParameters}></ParametersForm>
-          {/* <Form
-            form={form}
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            initialValues={{ remember: true }}
-            onFinish={onSubmit}
-            autoComplete="off"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '20px',
-            }}
+        <Sider 
+          theme={theme} 
+          style={{ position: 'fixed', height: '100%' }}
+        >
+          <ParametersForm 
+            setParameters={setParameters}
+            setTheme={setTheme}
+            theme={theme}
+            initialValues={parameters}
           >
-            <Space
-              style={{ marginBottom: 16 }}>
-              <span>Тема:</span>
-              <Switch checked={theme === 'dark'} onChange={changeTheme} />
-            </Space>
-            <Form.Item
-              label="Height"
-              name="Height"
-              rules={[{
-                type: 'number',
-                message: 'Введите только числа!',
-              }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Width"
-              name="Width"
-              rules={[{
-                type: 'number',
-                message: 'Введите только числа!',
-              }]}
-            >
-              <Input />
-            </Form.Item>
-
-
-            <Form.Item
-              label="Length"
-              name="Length"
-              rules={[{
-                type: 'number',
-                message: 'Введите только числа!',
-              }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item wrapperCol={{ width: '100%' }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ width: '100%' }}
-                block
-              >
-
-                Calculate
-              </Button>
-            </Form.Item>
-          </Form> */}
+          </ParametersForm>
         </Sider>
       </Layout>
     </ConfigProvider>

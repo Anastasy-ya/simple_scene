@@ -1,86 +1,86 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Form, Input, Button, Switch, Space } from 'antd';
 
-const ParametersForm = ({setParameters}) => {
+const ParametersForm = ({ setParameters, setTheme, theme, initialValues }) => {
   const [form] = Form.useForm();
-  const [theme, setTheme] = useState('light');
 
-  // Функция, которая срабатывает при успешной отправке формы
   const onSubmit = (values) => {
-    console.log( values.Width, values.Height, values.Length)
-    setParameters({ width: values.Width, height: values.Height, depth: values.Length })
+    setParameters({ 
+      //если значение не передано, использовать старое
+      height: values.Height || initialValues.height, 
+      width: values.Width || initialValues.width, 
+      depth: values.Length || initialValues.depth });
   };
 
-  // Функция для смены темы
-  const changeTheme = (checked) => {
-    setTheme(checked ? 'dark' : 'light');
+  const onSwitch = (checked) => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   return (
     <Form
+      theme={theme}
       form={form}
-      name="basic"
-      labelCol={{ span: 8 }}
+      name='basic'
+      labelCol={{ span: 12 }}
       wrapperCol={{ span: 16 }}
       initialValues={{ remember: true }}
-      onFinish={onSubmit}  // Обработчик события отправки формы
-      autoComplete="off"
+      onFinish={onSubmit}
+      autoComplete='off'
       style={{
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '20px',
+        padding: '30px',
       }}
     >
-      <Space style={{ marginBottom: 16 }}>
+      <Space style={{ marginBottom: 50, color: 'gray' }}>
         <span>Тема:</span>
-        <Switch checked={theme === 'dark'} onChange={changeTheme} />
+        <Switch defaultChecked onChange={onSwitch} style={{ background: 'gray' }} />
       </Space>
 
       <Form.Item
-        label="Height"
-        name="Height"
-        rules={[{
-          required: true,
-          message: 'Введите только числа!',
-          type: 'number', // Правило: только числа
-          transform: value => Number(value), // Преобразование значения в число
-        }]}
+        theme={theme}
+        label={<span style={{ color: 'gray' }}>Width</span>}
+        name='Width'
       >
-        <Input />
+        <Input
+          type='number'
+          style={{ marginLeft: '10px' }}
+          defaultValue={initialValues.width} />
       </Form.Item>
 
       <Form.Item
-        label="Width"
-        name="Width"
-        rules={[{
-          required: true,
-          message: 'Введите только числа!',
-          type: 'number',
-          transform: value => Number(value),
-        }]}
+        theme={theme}
+        label={<span style={{ color: 'gray' }}>Height</span>}
+        name='Height'
       >
-        <Input />
+        <Input
+          type='number'
+          style={{ marginLeft: '10px' }}
+          defaultValue={initialValues.height}
+        />
       </Form.Item>
 
       <Form.Item
-        label="Length"
-        name="Length"
-        rules={[{
-          required: true,
-          message: 'Введите только числа!',
-          type: 'number',
-          transform: value => Number(value),
-        }]}
+        theme={theme}
+        label={<span style={{ color: 'gray' }}>Length</span>}
+        name='Length'
       >
-        <Input />
+        <Input
+          type='number'
+          style={{ marginLeft: '10px' }}
+          defaultValue={initialValues.depth}
+        />
       </Form.Item>
 
-      <Form.Item wrapperCol={{ width: '100%' }}>
+      <Form.Item
+        wrapperCol={{ width: '100%' }}
+        theme={theme}
+      >
         <Button
-          type="primary"
-          htmlType="submit"
+          type='primary'
+          htmlType='submit'
           style={{ width: '100%' }}
           block
         >
