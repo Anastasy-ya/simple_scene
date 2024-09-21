@@ -1,15 +1,19 @@
 import React from 'react';
-import { Form, Input, Button, Switch, Space } from 'antd';
+import { Form, InputNumber, Button, Switch, Space } from 'antd';
 
 const ParametersForm = ({ setParameters, setTheme, theme, initialValues }) => {
   const [form] = Form.useForm();
 
   const onSubmit = (values) => {
-    setParameters({ 
-      //если значение не передано, использовать старое
-      height: values.Height || initialValues.height, 
-      width: values.Width || initialValues.width, 
-      depth: values.Length || initialValues.depth });
+    setParameters(
+      {
+        //если значение не передано, использовать старое
+        height: values.Height || initialValues.height,
+        width: values.Width || initialValues.width,
+        depth: values.Length || initialValues.depth
+      }
+    );
+
   };
 
   const onSwitch = (checked) => {
@@ -18,15 +22,13 @@ const ParametersForm = ({ setParameters, setTheme, theme, initialValues }) => {
 
   return (
     <Form
-      theme={theme}
+      initialValues={initialValues}  // задаём значения для всех полей
       form={form}
       name='basic'
-      labelCol={{ span: 12 }}
-      wrapperCol={{ span: 16 }}
-      initialValues={{ remember: true }}
       onFinish={onSubmit}
       autoComplete='off'
       style={{
+        width: 'auto',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -39,36 +41,38 @@ const ParametersForm = ({ setParameters, setTheme, theme, initialValues }) => {
         <Switch defaultChecked onChange={onSwitch} style={{ background: 'gray' }} />
       </Space>
 
+
       <Form.Item
-        theme={theme}
         label={<span style={{ color: 'gray' }}>Width</span>}
         name='Width'
       >
-        <Input
-          type='number'
+        <InputNumber
+          min={1}
+          max={100}
           style={{ marginLeft: '10px' }}
-          defaultValue={initialValues.width} />
+          defaultValue={initialValues.width}
+        />
       </Form.Item>
 
       <Form.Item
-        theme={theme}
         label={<span style={{ color: 'gray' }}>Height</span>}
         name='Height'
       >
-        <Input
-          type='number'
+        <InputNumber
+          min={1}
+          max={100}
           style={{ marginLeft: '10px' }}
           defaultValue={initialValues.height}
         />
       </Form.Item>
 
       <Form.Item
-        theme={theme}
         label={<span style={{ color: 'gray' }}>Length</span>}
         name='Length'
       >
-        <Input
-          type='number'
+        <InputNumber
+          min={1}
+          max={100}
           style={{ marginLeft: '10px' }}
           defaultValue={initialValues.depth}
         />

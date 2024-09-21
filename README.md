@@ -1,70 +1,92 @@
-# Getting Started with Create React App
+# Three.js app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+_The app includes a 3D box rendered in a Three.js scene with a form that allows users to adjust the dimensions of the box. Additionally, the project implements a dark mode switch that affects both the form and the 3D scene._
 
-## Available Scripts
+### Project Overview
+#### Features
 
-In the project directory, you can run:
+1. 3D Box with Adjustable Dimensions: The user can modify the box's length, width, and height via a form, and the changes are applied in real-time.
 
-### `npm start`
+2. Three.js: The 3D box is rendered using Three.js with BufferGeometry. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. React & TypeScript: The frontend is built with React and written entirely in TypeScript.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+4. Ant Design: The form is built using components from Ant Design, and its fields are customized with CSS, including handling non-default states (like focus).
+5. Client-Server Communication: The form submits the box parameters to the backend and takes parameters back.
+6. Dark Mode: The user can toggle between light and dark mode, which affects both the form and the 3D scene.
 
-### `npm test`
+### Technology Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Frontend
+- React (with TypeScript)
+- Three.js
+- Ant Design (for form components)
+- CSS (for custom styling)
 
-### `npm run build`
+#### Backend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Node.js with Express
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installation and Setup
+Prerequisites
+Node.js installed on your system.
+npm or yarn for package management.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Frontend Setup
 
-### `npm run eject`
+Clone the repository:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+git clone https://github.com/yourusername/web-developer-test.git
+```
+```
+cd web-developer-test
+```
+```
+npm install
+```
+```
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This will launch the React app on http://localhost:3000
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### Backend Setup
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Navigate to the server folder:
 
-## Learn More
+```
+cd server
+```
+```
+npm install
+```
+```
+npm run dev
+```
+The backend will run on http://localhost:5000. You can use this server to handle requests from the frontend for box triangulation.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### API Endpoints
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+POST /triangulate
+_This endpoint receives the dimensions of the box and returns the vertices of the triangulated box_
 
-### Code Splitting
+#### Request Body:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+{
+  "length": 10,
+  "width": 5,
+  "height": 5
+}
+```
 
-### Analyzing the Bundle Size
+#### Response:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+{
+  "vertices": [
+    [0, 0, 0], [10, 0, 0], [10, 5, 0], ... // Array of vertices
+  ]
+}
+```

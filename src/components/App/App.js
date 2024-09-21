@@ -51,7 +51,6 @@ const App = () => {
     });
 
     const controls = new OrbitControls(camera, renderer.domElement);
-
     sceneParamsRef.current = { scene, camera, renderer, controls };
 
     const animate = () => {
@@ -81,12 +80,12 @@ const App = () => {
 
     let createdObjects = [];
 
-    createdObjects = createOrUpdateObject(parameters, scene)
+    createdObjects = createOrUpdateObject(parameters, scene, theme)
     createdObjects.forEach(obj => {
       scene.add(obj)
     });
 
-  }, [parameters, sceneParamsRef]);
+  }, [parameters, sceneParamsRef, theme]);
 
   // Если сцена не загруженa, показать спин
   if (!sceneReady || !sceneParamsRef.current.scene) {

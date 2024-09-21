@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { indices, normals, uvArray } from '../Constants'
 
-export function createOrUpdateObject({ width, height, depth }, scene) {
+export function createOrUpdateObject({ width, height, depth }, scene, theme) {
   const environmentTexture = scene.environment;
 
   const exisitingCube = scene.getObjectByName('Box') ? scene.getObjectByName('Box') : null;
@@ -9,6 +9,8 @@ export function createOrUpdateObject({ width, height, depth }, scene) {
 
   const objects = [];
 
+  //фигура находится в начале координат, 
+  // соответственно значением точек по осям координат будет размер, разделенный на 2
   const halfWidth = width / 2;
   const halfHeight = height / 2;
   const halfDepth = depth / 2;
@@ -41,12 +43,8 @@ export function createOrUpdateObject({ width, height, depth }, scene) {
     -halfWidth, -halfHeight, -halfDepth,
   ]);
 
-  //vertices обновляются всегда
-  сubeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-  сubeGeometry.attributes.position.needsUpdate = true;
-
   const material = new THREE.MeshPhysicalMaterial({
-    color: 0xff7518,
+    color: theme === 'light' ? 0xff7518 : 0x40E0D0,
     opacity: 0.5,
     transmission: 0.5,
     ior: 1.5,
@@ -59,6 +57,11 @@ export function createOrUpdateObject({ width, height, depth }, scene) {
     side: THREE.DoubleSide,
   });
 
+  //vertices обновляются всегда
+  сubeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+  сubeGeometry.attributes.position.needsUpdate = true;
+
+
   if (!exisitingCube) {
     // Если объекта нет, создаем новый
     сubeGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
@@ -67,6 +70,10 @@ export function createOrUpdateObject({ width, height, depth }, scene) {
     const parallelepiped = new THREE.Mesh(сubeGeometry, material);
     parallelepiped.name = 'Box';
     objects.push(parallelepiped);
+  } else {
+    console.log(exisitingCube, 'exisitingCube')
+    exisitingCube.material.color.setHex(theme === 'light' ? 0xff7518 : 0x40E0D0);
+    exisitingCube.material.needsUpdate = true;
   }
 
   return objects;
