@@ -1,64 +1,85 @@
 import * as THREE from 'three';
+import { indices, normals, uvArray } from '../Constants'
 
-export function createObject({width, height, depth}) {
+export function createObject({ width, height, depth }, scene) {
+  const environmentTexture = scene.environment;
 
-  const geometry = new THREE.BufferGeometry();
-  //можно вернуть один объект, но возвращение 
-  //массива упрощает дальнейшую разработку и добавление объектов в сцену
+  const exisitingCube = scene.getObjectByName('Box') ? scene.getObjectByName('Box') : null;
+  console.log(exisitingCube, 'exisitingCube')
+  const сubeGeometry = exisitingCube ? exisitingCube.geometry : new THREE.BufferGeometry();;
+
   const objects = [];
 
-  //поскольку фигура располагается в начале координат, то размеры фигуры будут разделены координатами пополам
   const halfWidth = width / 2;
   const halfHeight = height / 2;
   const halfDepth = depth / 2;
 
-  //массив координат
+  // Массив вершин
   const vertices = new Float32Array([
-    -halfWidth, -halfHeight, halfDepth, //Вершина 0
-    halfWidth, -halfHeight, halfDepth, //Вершина 1
-    halfWidth, halfHeight, halfDepth, //Вершина 2
-    -halfWidth, halfHeight, halfDepth, //Вершина 3
-    -halfWidth, -halfHeight, -halfDepth, //Вершина 4
-    halfWidth, -halfHeight, -halfDepth, //Вершина 5
-    halfWidth, halfHeight, -halfDepth, //Вершина 6
-    -halfWidth, halfHeight, -halfDepth  //Вершина 7
+    halfWidth, halfHeight, halfDepth,
+    halfWidth, halfHeight, -halfDepth,
+    halfWidth, -halfHeight, halfDepth,
+    halfWidth, -halfHeight, -halfDepth,
+    -halfWidth, halfHeight, -halfDepth,
+    -halfWidth, halfHeight, halfDepth,
+    -halfWidth, -halfHeight, -halfDepth,
+    -halfWidth, -halfHeight, halfDepth,
+    -halfWidth, halfHeight, -halfDepth,
+    halfWidth, halfHeight, -halfDepth,
+    -halfWidth, halfHeight, halfDepth,
+    halfWidth, halfHeight, halfDepth,
+    -halfWidth, -halfHeight, halfDepth,
+    halfWidth, -halfHeight, halfDepth,
+    -halfWidth, -halfHeight, -halfDepth,
+    halfWidth, -halfHeight, -halfDepth,
+    -halfWidth, halfHeight, halfDepth,
+    halfWidth, halfHeight, halfDepth,
+    -halfWidth, -halfHeight, halfDepth,
+    halfWidth, -halfHeight, halfDepth,
+    halfWidth, halfHeight, -halfDepth,
+    -halfWidth, halfHeight, -halfDepth,
+    halfWidth, -halfHeight, -halfDepth,
+    -halfWidth, -halfHeight, -halfDepth,
   ]);
 
-  // задаю индексы вершин для оптимизации ресурсов 
-  // чтобы не задавать все точки через vertices
-  const indices = [
-    // Передняя грань
-    0, 1, 2, 2, 3, 0,
-    // Задняя грань
-    4, 5, 6, 6, 7, 4,
-    // Верхняя грань
-    3, 2, 6, 6, 7, 3,
-    // Нижняя грань
-    0, 1, 5, 5, 4, 0,
-    // Левая грань
-    0, 3, 7, 7, 4, 0,
-    // Правая грань
-    1, 2, 6, 6, 5, 1
-  ];
+  //vertices обновляется всегда (надо ли обновлять что-то еще?)
+  сubeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+  сubeGeometry.attributes.position.needsUpdate = true;
 
-  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-  geometry.setIndex(indices);
+  // if (!exisitingCube) {//если куб создается заново
+  //   сubeGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
+  //   сubeGeometry.setIndex(indices);
+  //   сubeGeometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+  // }
+  // else {
+  //   сubeGeometry.vertices.forEach(vertex => {})
+  // }
 
-  const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x00ffff,
-    metalness: 0,
-    roughness: 0,
-    transmission: 1.0, // прозрачность
-    thickness: 5, // Толщина стекла
-    // envMap: environmentTexture, // Текстура окружения для отражений
+  const material = new THREE.MeshPhysicalMaterial({
+    color: 0xff7518,
+    opacity: 0.5,
+    transmission: 0.5,
+    ior: 1.5,
+    roughness: 0.2,
+    metalness: 0.0,
+    clearcoat: 0.0,
+    clearcoatRoughness: 0.2,
+    envMap: environmentTexture,
     envMapIntensity: 1.0,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.1,
+    side: THREE.DoubleSide,
   });
-  
-  const parallelepiped = new THREE.Mesh(geometry, glassMaterial);
 
-  objects.push(parallelepiped);
+  console.log(exisitingCube, 'exisitingCube')
+
+  if (!exisitingCube) {
+    // Если объекта нет, создаем новый
+    сubeGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
+    сubeGeometry.setIndex(indices);
+    сubeGeometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+    const parallelepiped = new THREE.Mesh(сubeGeometry, material);
+    parallelepiped.name = 'Box';
+    objects.push(parallelepiped); // Добавляем новый объект в сцену
+  }
 
   return objects;
 }
