@@ -1,4 +1,4 @@
-export const API = "https://simple-scene-api.vercel.app"; //http://localhost:5000";
+export const API = "http://localhost:5000"; //http://localhost:5000";
 
 // Индексы вершин для граней
 export const indices = [
