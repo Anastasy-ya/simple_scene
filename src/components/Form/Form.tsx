@@ -27,7 +27,6 @@ const ParametersForm: React.FC<ParametersFormProps> = ({
     saveTheme({ theme: newTheme })
       .then((response) => {
         console.log(response, "Theme saved");
-        console.log(newTheme, "newTheme");
         setTheme(newTheme);
         localStorage.setItem("theme", JSON.stringify(newTheme));
       })
@@ -70,14 +69,11 @@ const ParametersForm: React.FC<ParametersFormProps> = ({
     saveThemeData(inputData);
   };
 
-  console.log(theme, "theme попадает в форму");
-
   //отрисовка после получения всех данных
   return (
     <>
       {dataReceived ? (
         <Form
-          // theme={theme}
           initialValues={initialValues}
           form={form}
           name="basic"
@@ -92,7 +88,6 @@ const ParametersForm: React.FC<ParametersFormProps> = ({
           <Space style={{ marginBottom: 50, color: "gray" }}>
             <span>Тема:</span>
             <Switch
-              // defaultChecked
               onChange={onSwitch}
               style={{ background: "gray" }}
             />
