@@ -5,6 +5,11 @@ _The app includes a 3D box rendered in a Three.js scene with a form that allows 
 
 gh-pages: https://anastasy-ya.github.io/simple_scene/
 
+(требует загрузки бэка на локальном хосте!)
+
+(requires loading the backend on the local host!)
+
+backend: https://github.com/Anastasy-ya/simple_scene_api
 
 ### Project Overview
 #### Features
