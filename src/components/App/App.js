@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import "./App.css";
-//TODO переделать в TS проверка на отриц
+//TODO переделать в TS
 import React, { useEffect, useState, useRef } from "react";
 import { Layout, Spin, ConfigProvider } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
