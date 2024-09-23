@@ -1,26 +1,40 @@
 import React from "react";
 import { Form, InputNumber, Button, Switch, Space } from "antd";
-import { saveParameters, saveTheme} from "../Services/Api.js";
+import { saveParameters, saveTheme} from "../Services/Api";
 
-const ParametersForm = ({ setParameters, setTheme, theme, initialValues }) => {
+interface ParametersFormProps {
+  setParameters: (parameters: any) => void; // замените `any` на более конкретный тип
+  setTheme: (theme: string) => void;
+  theme: string;
+  initialValues: {
+    height: number;
+    width: number;
+    depth: number;
+  };
+}
+
+const ParametersForm: React.FC<ParametersFormProps> = ({
+  setParameters,
+  setTheme,
+  theme,
+  initialValues,
+}) => {
   const [form] = Form.useForm();
 
-  
-
-  function saveThemeData(newTheme) {
+  const saveThemeData = (newTheme: string) => {
     saveTheme({ theme: newTheme })
       .then((response) => {
         console.log(response, "Theme saved");
-        console.log(newTheme, 'newTheme')
+        console.log(newTheme, "newTheme");
         setTheme(newTheme);
         localStorage.setItem("theme", JSON.stringify(newTheme));
       })
       .catch((err) => {
         console.error("Ошибка при сохранении темы:", err);
       });
-  }
+  };
 
-  function saveParameterseData(parameters) {
+  const saveParameterseData = (parameters: { height: number; width: number; depth: number }) => {
     saveParameters(parameters)
       .then((response) => {
         console.log(response, "Parameters saved");
@@ -30,19 +44,18 @@ const ParametersForm = ({ setParameters, setTheme, theme, initialValues }) => {
       .catch((err) => {
         console.error("Ошибка при сохранении параметров:", err);
       });
-  }
-
-  const onSubmit = (values) => {
-    const inputData = {
-      // если данные не введены, использовать старые
-      height: values.height || initialValues.height,
-      width: values.width || initialValues.width,
-      depth: values.depth || initialValues.depth
-    }
-    saveParameterseData(inputData)
   };
 
-  const onSwitch = (checked) => {
+  const onSubmit = (values: { height?: number; width?: number; depth?: number }) => {
+    const inputData = {
+      height: values.height || initialValues.height,
+      width: values.width || initialValues.width,
+      depth: values.depth || initialValues.depth,
+    };
+    saveParameterseData(inputData);
+  };
+
+  const onSwitch = (checked: boolean) => {
     const inputData = theme === "light" ? "dark" : "light";
     setTheme(inputData);
     localStorage.setItem("theme", JSON.stringify(inputData));

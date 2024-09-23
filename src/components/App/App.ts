@@ -1,31 +1,38 @@
 import * as THREE from "three";
 import "./App.css";
-//TODO переделать в TS проверка на отриц
 import React, { useEffect, useState, useRef } from "react";
 import { Layout, Spin, ConfigProvider } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { createOrUpdateObject } from "../Objects/Objects.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { handleResize } from "../Scene/HandleResize.js";
-import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
+import { createOrUpdateObject } from "../Objects/Objects";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { handleResize } from "../Scene/HandleResize";
+import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader"; // Исправлено на корректный путь
 import background from "../Scene/brown_photostudio_04_4k.exr";
-import ParametersForm from "../Form/Form.js";
-import { getParameters, getTheme } from "../Services/Api.js";
+import ParametersForm from "../Form/Form";
+import { getParameters, getTheme } from "../Services/Api";
 
 const { Sider } = Layout;
 
-const App = () => {
-  const [theme, setTheme] = useState(JSON.parse(localStorage.getItem("theme")) || "light");
-  const [sceneReady, setSceneReady] = useState(false);
-  const sceneParamsRef = useRef(null);
-  const [parameters, setParameters] = useState(JSON.parse(localStorage.getItem("parameters")) || { width: 10, height: 15, depth: 20 });
+interface Parameters {
+  width: number;
+  height: number;
+  depth: number;
+}
+
+const App: React.FC = () => {
+  const [theme, setTheme] = useState<string>(
+    JSON.parse(localStorage.getItem("theme") || '"light"')
+  );  
+  const [sceneReady, setSceneReady] = useState<boolean>(false);
+  const sceneParamsRef = useRef<{ scene: THREE.Scene; camera: THREE.PerspectiveCamera; renderer: THREE.WebGLRenderer; controls: OrbitControls } | null>(null);
+  const [parameters, setParameters] = useState<Parameters>(JSON.parse(localStorage.getItem("parameters")) || { width: 10, height: 15, depth: 20 });
 
   // Получение данных с сервера
   useEffect(() => {
     async function fetchData() {
       try {
         const [parameters, theme] = await Promise.all([getParameters(), getTheme()]);
-  
+
         console.log([parameters, theme], '[parameters, theme]');
         // Сохранение параметров и темы в состояние и локальное хранилище
         setParameters(parameters);
@@ -40,12 +47,10 @@ const App = () => {
   
     fetchData();
   }, []);
-  
 
   // инициализация сцены
   useEffect(() => {
     const scene = new THREE.Scene();
-
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
@@ -77,7 +82,6 @@ const App = () => {
 
     const animate = () => {
       requestAnimationFrame(animate);
-
       controls.update();
       renderer.render(scene, camera);
       setSceneReady(true);
@@ -98,37 +102,37 @@ const App = () => {
   useEffect(() => {
     const { scene } = sceneParamsRef.current || {};
 
-    if (!scene) return // Ждём пока сцена инициализируется
+    if (!scene) return; // Ждём пока сцена инициализируется
 
-    let createdObjects = [];
-
-    createdObjects = createOrUpdateObject(parameters, scene, theme)
+    const createdObjects = createOrUpdateObject(parameters, scene, theme);
     createdObjects.forEach(obj => {
-      scene.add(obj)
+      scene.add(obj);
     });
 
-  }, [parameters, sceneParamsRef, theme]);
+  }, [parameters, theme]);
 
   // Если сцена не загруженa, показать спин
-  if (!sceneReady || !sceneParamsRef.current.scene) {
-    return <Spin
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "fixed"
-      }}
-      indicator={
-        <LoadingOutlined
-          style={{
-            fontSize: 48,
-          }}
-          spin
-        />
-      }
-    />;
+  if (!sceneReady || !sceneParamsRef.current?.scene) {
+    return (
+      <Spin
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "fixed"
+        }}
+        indicator={
+          <LoadingOutlined
+            style={{
+              fontSize: 48,
+            }}
+            spin
+          />
+        }
+      />
+    );
   }
 
   return (
@@ -143,8 +147,7 @@ const App = () => {
             setTheme={setTheme}
             theme={theme}
             initialValues={parameters}
-          >
-          </ParametersForm>
+          />
         </Sider>
       </Layout>
     </ConfigProvider>
