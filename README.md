@@ -2,6 +2,10 @@
 
 _The app includes a 3D box rendered in a Three.js scene with a form that allows users to adjust the dimensions of the box. Additionally, the project implements a dark mode switch that affects both the form and the 3D scene._
 
+
+gh-pages: https://anastasy-ya.github.io/simple_scene/
+
+
 ### Project Overview
 #### Features
 
