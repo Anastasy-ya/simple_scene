@@ -41,7 +41,7 @@ git clone git@github.com:Anastasy-ya/simple_scene.git
 ```
 
 ```
-cd web-developer-test
+cd folder
 ```
 
 ```
