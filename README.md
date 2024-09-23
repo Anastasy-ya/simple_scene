@@ -37,7 +37,7 @@ npm or yarn for package management.
 Clone the repository:
 
 ```
-git clone https://github.com/yourusername/web-developer-test.git
+git clone git@github.com:Anastasy-ya/simple_scene.git
 ```
 ```
 cd web-developer-test
@@ -53,10 +53,11 @@ This will launch the React app on http://localhost:3000
 
 #### Backend Setup
 
-Navigate to the server folder:
+```
+git clone git@github.com:Anastasy-ya/simple_scene_api.git
 
 ```
-cd server
+cd folder
 ```
 ```
 npm install
@@ -68,9 +69,15 @@ The backend will run on http://localhost:5000. You can use this server to handle
 
 ### API Endpoints
 
-POST /triangulate
-_This endpoint receives the dimensions of the box and returns the vertices of the triangulated box_
+GET /getparameters
+#### Request Body:
 
+
+GET /gettheme
+#### Request Body:
+
+
+POST /saveparameters
 #### Request Body:
 
 ```
@@ -81,12 +88,13 @@ _This endpoint receives the dimensions of the box and returns the vertices of th
 }
 ```
 
-#### Response:
+POST /savetheme
+#### Request Body:
 
 ```
 {
-  "vertices": [
-    [0, 0, 0], [10, 0, 0], [10, 5, 0], ... // Array of vertices
-  ]
+  "length": 10,
+  "width": 5,
+  "height": 5
 }
 ```
