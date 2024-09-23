@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/simple_scene/static/css/main.754ebb54.css",
+    "main.js": "/simple_scene/static/js/main.cf137f7d.js",
+    "static/js/453.8f3bfb88.chunk.js": "/simple_scene/static/js/453.8f3bfb88.chunk.js",
+    "static/media/brown_photostudio_04_4k.exr": "/simple_scene/static/media/brown_photostudio_04_4k.d7a37a143f680c7e2c0b.exr",
+    "index.html": "/simple_scene/index.html",
+    "main.754ebb54.css.map": "/simple_scene/static/css/main.754ebb54.css.map",
+    "main.cf137f7d.js.map": "/simple_scene/static/js/main.cf137f7d.js.map",
+    "453.8f3bfb88.chunk.js.map": "/simple_scene/static/js/453.8f3bfb88.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.754ebb54.css",
+    "static/js/main.cf137f7d.js"
+  ]
+}
