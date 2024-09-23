@@ -2,12 +2,15 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "jsx": "react",
+    "jsx": "react-jsx", // Рекомендуется использовать для новых версий React
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["node_modules/@types", "src/types"], // Если у вас будут пользовательские типы
+    "baseUrl": "./src", // Правильная настройка для резолва путей
+    "moduleResolution": "node" // Поддержка Node модулей
   },
-  "include": ["src/**/*"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

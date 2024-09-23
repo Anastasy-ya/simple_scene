@@ -1,5 +1,5 @@
 // функция, адаптирующая сцену под размер экрана
-export const handleResize = (sceneParamsRef) => {
+export const handleResize = (sceneParamsRef: Record<string, any>) => {
   const { camera, renderer } = sceneParamsRef.current || {};
 
   if (camera && renderer) {
@@ -18,6 +18,6 @@ export const handleResize = (sceneParamsRef) => {
     }())
 
   } else {
-    console.log('No sceneParams');
+    console.log("No sceneParams");
   }
 };

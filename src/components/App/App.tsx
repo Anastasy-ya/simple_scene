@@ -1,17 +1,17 @@
-import * as THREE from "three";
 import "./App.css";
-import React, { useEffect, useState, useRef } from "react";
-import { Layout, Spin, ConfigProvider } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { createOrUpdateObject } from "../Objects/Objects";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { handleResize } from "../Scene/HandleResize";
-import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader"; // Исправлено на корректный путь
-import background from "../Scene/brown_photostudio_04_4k.exr";
+import {ConfigProvider, Layout, Spin, theme as antdTheme} from "antd";
+import React, {useEffect, useRef, useState} from "react";
+import * as THREE from "three";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {EXRLoader} from "three/examples/jsm/loaders/EXRLoader";
 import ParametersForm from "../Form/Form";
-import { getParameters, getTheme } from "../Services/Api";
+import {createOrUpdateObject} from "../Objects/Objects";
+import background from "../Scene/brown_photostudio_04_4k.exr";
+import {handleResize} from "../Scene/HandleResize";
+import {getParameters, getTheme} from "../Services/Api";
 
-const { Sider } = Layout;
+const {Sider} = Layout;
 
 interface Parameters {
   width: number;
@@ -20,37 +20,46 @@ interface Parameters {
 }
 
 const App: React.FC = () => {
-  const [theme, setTheme] = useState<string>(
-    JSON.parse(localStorage.getItem("theme") || '"light"')
-  );  
+
+  const [theme, setTheme] = useState<string>("");
+  const [parameters, setParameters] = useState<Parameters>({ width: 10, height: 15, depth: 20 });
+  const [dataReceived, setDataReceived] = useState<boolean>(false);
   const [sceneReady, setSceneReady] = useState<boolean>(false);
-  const sceneParamsRef = useRef<{ scene: THREE.Scene; camera: THREE.PerspectiveCamera; renderer: THREE.WebGLRenderer; controls: OrbitControls } | null>(null);
-  const [parameters, setParameters] = useState<Parameters>(JSON.parse(localStorage.getItem("parameters")) || { width: 10, height: 15, depth: 20 });
+  const sceneParamsRef = useRef<{
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    controls: OrbitControls;
+  } | null>(null);
+
+  const themeConfig = theme === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm;
 
   // Получение данных с сервера
   useEffect(() => {
     async function fetchData() {
       try {
-        const [parameters, theme] = await Promise.all([getParameters(), getTheme()]);
+        const [parameters, themeData] = await Promise.all([getParameters(), getTheme()]);
 
-        console.log([parameters, theme], '[parameters, theme]');
+        console.log([parameters, themeData], "[parameters, theme]");
         // Сохранение параметров и темы в состояние и локальное хранилище
         setParameters(parameters);
         localStorage.setItem("parameters", JSON.stringify(parameters));
-        setTheme(theme);
-        localStorage.setItem("theme", JSON.stringify(theme));
         
+        setTheme(themeData.theme);
+        localStorage.setItem("theme", JSON.stringify(theme));
+        setDataReceived(true);
       } catch (error) {
         console.error("Ошибка при выполнении запросов:", error);
       }
     }
   
     fetchData();
-  }, []);
+  }, [theme]);
 
   // инициализация сцены
   useEffect(() => {
-    const scene = new THREE.Scene();
+    if (dataReceived) {
+      const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
@@ -96,7 +105,8 @@ const App: React.FC = () => {
       document.body.removeChild(renderer.domElement);
       window.removeEventListener("resize", () => handleResize(sceneParamsRef));
     };
-  }, []);
+    }
+  }, [dataReceived]);
 
   // создание и удаление мешей
   useEffect(() => {
@@ -135,11 +145,13 @@ const App: React.FC = () => {
     );
   }
 
+  const siderTheme: "light" | "dark" = theme === "dark" ? "dark" : "light";
+
   return (
-    <ConfigProvider theme={theme}>
+    <ConfigProvider theme={{ algorithm: themeConfig }}>
       <Layout style={{ height: "100vh", position: "fixed" }}>
         <Sider 
-          theme={theme} 
+          theme={siderTheme} 
           style={{ position: "fixed", height: "100%" }}
         >
           <ParametersForm 
@@ -147,6 +159,7 @@ const App: React.FC = () => {
             setTheme={setTheme}
             theme={theme}
             initialValues={parameters}
+            dataReceived={dataReceived}
           />
         </Sider>
       </Layout>

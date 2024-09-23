@@ -1,6 +1,6 @@
 import { API } from "../Constants";
 
-function checkResponce(res) {
+function checkResponce(res: any) {
   if (res.ok) {
     return res.json();
   }
@@ -12,7 +12,6 @@ export function getParameters() {
     headers: {
       "Content-Type": "application/json",
     },
-    // credentials: "include",
   }).then((res) => checkResponce(res)
   );
 }
@@ -22,29 +21,26 @@ export function getTheme() {
     headers: {
       "Content-Type": "application/json",
     },
-    // credentials: "include",
   }).then((res) => checkResponce(res)
   );
 }
 
-export function saveParameters(parameters) {
+export function saveParameters(parameters: object) {
   return fetch(`${API}/saveparameters`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    // credentials: "include",
     body: JSON.stringify(parameters),
   }).then((res) => checkResponce(res));
 }
 
-export function saveTheme(theme) {
+export function saveTheme(theme: object) {
   return fetch(`${API}/savetheme`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    // credentials: "include",
     body: JSON.stringify(theme),
   }).then((res) => checkResponce(res));
 }
