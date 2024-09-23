@@ -39,12 +39,15 @@ Clone the repository:
 ```
 git clone git@github.com:Anastasy-ya/simple_scene.git
 ```
+
 ```
 cd web-developer-test
 ```
+
 ```
 npm install
 ```
+
 ```
 npm start
 ```
@@ -57,15 +60,19 @@ This will launch the React app on http://localhost:3000
 git clone git@github.com:Anastasy-ya/simple_scene_api.git
 
 ```
+
+```
 cd folder
 ```
+
 ```
 npm install
 ```
+
 ```
 npm start
 ```
-The backend will run on http://localhost:5000. You can use this server to handle requests from the frontend for box triangulation.
+The backend will run on http://localhost:5000.
 
 ### API Endpoints
 
@@ -98,3 +105,4 @@ POST /savetheme
   "height": 5
 }
 ```
+
