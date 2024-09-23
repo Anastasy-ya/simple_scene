@@ -62,7 +62,7 @@ cd server
 npm install
 ```
 ```
-npm run dev
+npm start
 ```
 The backend will run on http://localhost:5000. You can use this server to handle requests from the frontend for box triangulation.
 

@@ -1,24 +1,46 @@
-import * as THREE from 'three';
-import './App.css';
+import * as THREE from "three";
+import "./App.css";
 //TODO переделать в TS проверка на отриц
-import React, { useEffect, useState, useRef } from 'react';
-import { Layout, Spin, ConfigProvider } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { createOrUpdateObject } from '../Objects/Objects.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { handleResize } from '../Scene/HandleResize.js';
-import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
-import background from '../Scene/brown_photostudio_04_4k.exr';
-import ParametersForm from '../Form/Form.js'
-
+import React, { useEffect, useState, useRef } from "react";
+import { Layout, Spin, ConfigProvider } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { createOrUpdateObject } from "../Objects/Objects.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { handleResize } from "../Scene/HandleResize.js";
+import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
+import background from "../Scene/brown_photostudio_04_4k.exr";
+import ParametersForm from "../Form/Form.js";
+import { getParameters, getTheme } from "../Services/Api.js";
 
 const { Sider } = Layout;
 
 const App = () => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(JSON.parse(localStorage.getItem("theme")) || "light");
   const [sceneReady, setSceneReady] = useState(false);
   const sceneParamsRef = useRef(null);
-  const [parameters, setParameters] = useState({ width: 10, height: 15, depth: 20 });
+  const [parameters, setParameters] = useState(JSON.parse(localStorage.getItem("parameters")) || { width: 10, height: 15, depth: 20 });
+
+  // Получение данных с сервера
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [parameters, theme] = await Promise.all([getParameters(), getTheme()]);
+  
+        console.log([parameters, theme], '[parameters, theme]');
+        // Сохранение параметров и темы в состояние и локальное хранилище
+        setParameters(parameters);
+        localStorage.setItem("parameters", JSON.stringify(parameters));
+        setTheme(theme);
+        localStorage.setItem("theme", JSON.stringify(theme));
+        
+      } catch (error) {
+        console.error("Ошибка при выполнении запросов:", error);
+      }
+    }
+  
+    fetchData();
+  }, []);
+  
 
   // инициализация сцены
   useEffect(() => {
@@ -63,12 +85,12 @@ const App = () => {
 
     animate();
 
-    window.addEventListener('resize', () => handleResize(sceneParamsRef));
+    window.addEventListener("resize", () => handleResize(sceneParamsRef));
     handleResize(sceneParamsRef);
 
     return () => {
       document.body.removeChild(renderer.domElement);
-      window.removeEventListener('resize', () => handleResize(sceneParamsRef));
+      window.removeEventListener("resize", () => handleResize(sceneParamsRef));
     };
   }, []);
 
@@ -91,12 +113,12 @@ const App = () => {
   if (!sceneReady || !sceneParamsRef.current.scene) {
     return <Spin
       style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'fixed'
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "fixed"
       }}
       indicator={
         <LoadingOutlined
@@ -111,10 +133,10 @@ const App = () => {
 
   return (
     <ConfigProvider theme={theme}>
-      <Layout style={{ height: '100vh', position: 'fixed' }}>
+      <Layout style={{ height: "100vh", position: "fixed" }}>
         <Sider 
           theme={theme} 
-          style={{ position: 'fixed', height: '100%' }}
+          style={{ position: "fixed", height: "100%" }}
         >
           <ParametersForm 
             setParameters={setParameters}

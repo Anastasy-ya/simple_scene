@@ -1,3 +1,5 @@
+export const API = "http://localhost:5000";
+
 // Индексы вершин для граней
 export const indices = [
   0, 2, 1, 2, 3, 1,
